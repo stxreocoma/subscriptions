@@ -1,0 +1,140 @@
+openapi: '3.1.0'
+info:
+  title: Subscriptions API
+  description: API for managing user subscriptions to various services.
+  version: '1.0.0'
+servers:
+  - url: http://localhost:8080
+paths:
+  /subscriptions/{service_name}/{user_id}:
+    get:
+      summary: Get a subscription
+      description: Retrieve a specific user subscription by service name and user ID.
+      parameters:
+        - name: service_name
+          in: path
+          required: true
+          schema:
+            type: string
+        - name: user_id
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: A subscription object.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Subscription'
+        '404':
+          description: Subscription not found.
+    post:
+      summary: Create a subscription
+      description: Create a new subscription for a user.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Subscription'
+      responses:
+        '201':
+          description: Subscription created successfully.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Subscription'
+        '400':
+          description: Invalid input data.
+    put:
+      summary: Update a subscription
+      description: Update an existing subscription for a user.
+      parameters:
+        - name: service_name
+          in: path
+          required: true
+          schema:
+            type: string
+        - name: user_id
+          in: path
+          required: true
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Subscription'
+      responses:
+        '200':
+          description: Subscription updated successfully.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Subscription'
+        '404':
+          description: Subscription not found.
+    delete:
+      summary: Delete a subscription
+      description: Delete a specific user subscription by service name and user ID.
+      parameters:
+        - name: service_name
+          in: path
+          required: true
+          schema:
+            type: string
+        - name: user_id
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '204':
+          description: Subscription deleted successfully.
+        '404':
+          description: Subscription not found.
+  /subscriptions:
+    get:
+      summary: List all subscriptions
+      description: Retrieve a list of all user subscriptions.
+      responses:
+        '200':
+          description: A list of subscriptions.
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Subscription'
+
+components:
+  schemas:
+    Subscription:
+      type: object
+      properties:
+        service_name:
+          type: string
+          description: Name of the subscription service.
+        user_id:
+          type: string
+          description: Unique identifier for the user in UUID format.
+        start_date:
+          type: string
+          format: date-time
+          description: Start date of the subscription.
+        end_date:
+          type: string
+          format: date-time
+          description: End date of the subscription, if applicable.
+      required:
+        - service_name
+        - user_id
+        - start_date
+      example:
+        service_name: Yandex Plus
+        user_id: 123e4567-e89b-12d3-a456-426614174000
+        start_date: '2025.07'
+        end_date: '2026.07'
