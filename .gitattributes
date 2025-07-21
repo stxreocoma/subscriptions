@@ -1,0 +1,12 @@
+* text=auto
+
+*.go -text diff=golang eol=lf
+
+*.gitattributes      text
+.gitignore           text
+
+.gitattributes       export-ignore
+.gitignore           export-ignore
+.gitkeep             export-ignore
+
+Dockerfile text eol=lf

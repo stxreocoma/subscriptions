@@ -1,0 +1,18 @@
+pre-commit:
+  commands:
+    govet:
+      files: git ls-files -m
+      glob: "*.go"
+      run: go vet {files}
+    gotest:
+      files: git ls-files
+      glob: "*.go"
+      run: go test
+    gotestrace:
+      files: git ls-files
+      glob: "*.go"
+      run: go test -race
+    gofmt:
+      files: git ls-files -m
+      glob: "*.go"
+      run: go fmt {files}
