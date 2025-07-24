@@ -1,13 +1,142 @@
-openapi: '3.1.0'
+openapi: '3.0.0'
 info:
   title: Subscriptions API
   description: API for managing user subscriptions to various services.
   version: '1.0.0'
 servers:
+  - url: https://services.com
+    description: 'https сервер'
   - url: http://localhost:8080
+    description: 'Тестовый сервер'
+tags:
+  - name: subscriptions
+    description: Операции над подписками
+
 paths:
-  /subscriptions/{service_name}/{user_id}:
+  /subscriptions/cost:
     get:
+      tags:
+        - subscriptions
+      summary: Get subscription cost
+      description: Retrieve the cost of  each subscription service and the total cost of all subscriptions for the time interval.
+      parameters:
+        - name: user_id
+          in: query
+          required: true
+          schema:
+            type: string
+        - name: start_date
+          in: query
+          required: true
+          schema:
+            type: string
+            format: date
+            description: Start date of the period to calculate costs.
+        - name: end_date
+          in: query
+          required: true
+          schema:
+            type: string
+            format: date
+            description: End date of the period to calculate costs.
+      responses:
+        '200':
+          description: Cost of subscriptions retrieved successfully.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  total_cost:
+                    type: number
+                    format: integer
+                    description: Total cost of all subscriptions for the specified period.
+                  subscriptions:
+                    type: array
+                    description: List of individual subscription costs.
+                    maxItems: 20
+                    items:
+                      type: object
+                      properties:
+                        service_name:
+                          type: string
+                          description: Name of the subscription service.
+                        cost:
+                          type: number
+                          format: integer
+                          description: Cost of the subscription service for the specified period.
+        '400':
+          description: Invalid input data.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                    description: Error message indicating what went wrong.
+
+  /subscriptions/{user_id}:
+    get:
+      tags:
+        - subscriptions
+      summary: List all subscriptions
+      description: Retrieve a list of all user subscriptions.
+      parameters:
+        - name: user_id
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: A list of subscriptions.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    type: array
+                    maxItems: 20
+                    items:
+                      $ref: '#/components/schemas/Subscription'
+                  meta:
+                    type: object
+                    properties:
+                      page_size:
+                        type: integer
+                        description: The number of items on the current page.
+                      page:
+                        type: integer
+                        description: The current page number.
+
+  /subscription:
+    post:
+      summary: Create a subscription
+      description: Create a new subscription for a user.
+      tags:
+        - subscriptions
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Subscription'
+      responses:
+        '201':
+          description: Subscription created successfully.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Subscription'
+        '400':
+          description: Invalid input data.
+  
+  /subscription/{user_id}/{service_name}:
+    get:
+      tags:
+        - subscriptions
       summary: Get a subscription
       description: Retrieve a specific user subscription by service name and user ID.
       parameters:
@@ -30,27 +159,11 @@ paths:
                 $ref: '#/components/schemas/Subscription'
         '404':
           description: Subscription not found.
-    post:
-      summary: Create a subscription
-      description: Create a new subscription for a user.
-      requestBody:
-        required: true
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/Subscription'
-      responses:
-        '201':
-          description: Subscription created successfully.
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Subscription'
-        '400':
-          description: Invalid input data.
     put:
       summary: Update a subscription
       description: Update an existing subscription for a user.
+      tags:
+        - subscriptions
       parameters:
         - name: service_name
           in: path
@@ -80,6 +193,8 @@ paths:
     delete:
       summary: Delete a subscription
       description: Delete a specific user subscription by service name and user ID.
+      tags:
+        - subscriptions
       parameters:
         - name: service_name
           in: path
@@ -96,20 +211,6 @@ paths:
           description: Subscription deleted successfully.
         '404':
           description: Subscription not found.
-  /subscriptions:
-    get:
-      summary: List all subscriptions
-      description: Retrieve a list of all user subscriptions.
-      responses:
-        '200':
-          description: A list of subscriptions.
-          content:
-            application/json:
-              schema:
-                type: array
-                items:
-                  $ref: '#/components/schemas/Subscription'
-
 components:
   schemas:
     Subscription:
