@@ -1,41 +1,31 @@
 package api
 
 import (
-	"net/http"
+	"subscriptions/internal/storage"
+
+	"github.com/go-chi/chi/v5"
 )
 
-func GetSubscriptionHandler() http.HandlerFunc {
-	return func(w http.ResponseWriter, r *http.Request) {
-		panic("Not implemented")
-	}
+type API struct {
+	Router  chi.Router
+	Storage storage.Storage
 }
 
-func CreateSubscriptionHandler() http.HandlerFunc {
-	return func(w http.ResponseWriter, r *http.Request) {
-		panic("Not implemented")
+func NewAPI(storage storage.Storage) *API {
+	api := &API{
+		Router:  chi.NewRouter(),
+		Storage: storage,
 	}
+
+	api.InitRoutes()
+	return api
 }
 
-func UpdateSubscriptionHandler() http.HandlerFunc {
-	return func(w http.ResponseWriter, r *http.Request) {
-		panic("Not implemented")
-	}
-}
-
-func DeleteSubscriptionHandler() http.HandlerFunc {
-	return func(w http.ResponseWriter, r *http.Request) {
-		panic("Not implemented")
-	}
-}
-
-func ListSubscriptionsHandler() http.HandlerFunc {
-	return func(w http.ResponseWriter, r *http.Request) {
-		panic("Not implemented")
-	}
-}
-
-func SubscriptionTotalCostHandler() http.HandlerFunc {
-	return func(w http.ResponseWriter, r *http.Request) {
-		panic("Not implemented")
-	}
+func (a *API) InitRoutes() {
+	a.Router.Get("/subscription/{userID}/{serviceName}", a.GetSubscriptionHandler())
+	a.Router.Post("/subscription", a.CreateSubscriptionHandler())
+	a.Router.Put("/subscription/{userID}/{serviceName}", a.UpdateSubscriptionHandler())
+	a.Router.Delete("/subscription/{userID}/{serviceName}", a.DeleteSubscriptionHandler())
+	a.Router.Get("/subscriptions", a.ListSubscriptionsHandler())
+	a.Router.Get("/subscription/total-cost", a.GetSubscriptionTotalCostHandler())
 }

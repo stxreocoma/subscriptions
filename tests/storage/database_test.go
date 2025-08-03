@@ -174,7 +174,7 @@ func TestSubscriptionTotalCost(t *testing.T) {
 	endDate := "2024-12"
 
 	mock.ExpectQuery("SELECT").
-		WithArgs(endDate, startDate, userID, serviceName).
+		WithArgs(endDate, startDate, userID, endDate).
 		WillReturnRows(pgxmock.NewRows([]string{"total_price"}).
 			AddRow(299))
 
@@ -182,7 +182,7 @@ func TestSubscriptionTotalCost(t *testing.T) {
 	if err != nil {
 		t.Errorf("unexpected error: %v", err)
 	}
-	if totalCost != 299 {
+	if totalCost.TotalCost != 299 {
 		t.Errorf("expected total cost 299, got %d", totalCost)
 	}
 

@@ -54,7 +54,7 @@ func NewConfig() (*Config, error) {
 }
 
 func (c Config) GetDatabaseURL() string {
-	databaseURL := fmt.Sprintf("host=%2 port=%s user=%s password=%s dbname=%s sslmode=disable",
+	databaseURL := fmt.Sprintf("host=%s port=%s user=%s password=%s dbname=%s sslmode=disable",
 		c.database.dbHost,
 		c.database.dbPort,
 		c.database.dbUser,

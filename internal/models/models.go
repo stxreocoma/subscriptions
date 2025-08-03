@@ -13,3 +13,7 @@ type Subscription struct {
 	StartDate   time.Time `json:"start_date" validate:"required"`
 	EndDate     time.Time `json:"end_date"`
 }
+
+type TotalSubscriptionCost struct {
+	TotalCost int `json:"total_cost"`
+}

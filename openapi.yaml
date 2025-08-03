@@ -13,16 +13,21 @@ tags:
     description: Операции над подписками
 
 paths:
-  /subscriptions/cost:
+  /subscriptions/total/{user_id}:
     get:
       tags:
         - subscriptions
-      summary: Get subscription cost
-      description: Retrieve the cost of  each subscription service and the total cost of all subscriptions for the time interval.
+      summary: Get total subscription cost within a date range
+      description: Retrieve the total cost of one or all subscriptions for a user within a specified date range.
       parameters:
         - name: user_id
-          in: query
+          in: path
           required: true
+          schema:
+            type: string
+        - name: service_name
+          in: query
+          required: false
           schema:
             type: string
         - name: start_date
@@ -30,51 +35,25 @@ paths:
           required: true
           schema:
             type: string
-            format: date
-            description: Start date of the period to calculate costs.
+            format: date-time
         - name: end_date
           in: query
           required: true
           schema:
             type: string
-            format: date
-            description: End date of the period to calculate costs.
+            format: date-time
       responses:
         '200':
-          description: Cost of subscriptions retrieved successfully.
+          description: Total cost of subscriptions.
           content:
             application/json:
               schema:
-                type: object
-                properties:
-                  total_cost:
-                    type: number
-                    format: integer
-                    description: Total cost of all subscriptions for the specified period.
-                  subscriptions:
-                    type: array
-                    description: List of individual subscription costs.
-                    maxItems: 20
-                    items:
-                      type: object
-                      properties:
-                        service_name:
-                          type: string
-                          description: Name of the subscription service.
-                        cost:
-                          type: number
-                          format: integer
-                          description: Cost of the subscription service for the specified period.
+                type: string
+                example: '1000'
         '400':
           description: Invalid input data.
-          content:
-            application/json:
-              schema:
-                type: object
-                properties:
-                  error:
-                    type: string
-                    description: Error message indicating what went wrong.
+        '404':
+          description: User not found or no subscriptions found for the specified date range.
 
   /subscriptions/{user_id}:
     get:
