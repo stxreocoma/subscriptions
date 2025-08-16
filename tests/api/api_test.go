@@ -225,7 +225,7 @@ func TestListSubscriptionsHandler(t *testing.T) {
 
 func TestSubscriptionTotalCostHandler(t *testing.T) {
 	userID := uuid.New()
-	serviceName := "VK Music"
+	serviceName := "VK+Music"
 	startDate := "2025-03"
 	endDate := "2025-07"
 
@@ -248,7 +248,7 @@ func TestSubscriptionTotalCostHandler(t *testing.T) {
 	body, err := io.ReadAll(resp.Body)
 	require.NoError(t, err, "Failed to read response body")
 
-	var totalCost int
+	var totalCost models.TotalSubscriptionCost
 
 	err = json.Unmarshal(body, &totalCost)
 	require.NoError(t, err, "Failed to unmarshal body")
